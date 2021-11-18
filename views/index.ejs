@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLAMES</title>
+</head>
+<body>
+    <h1 id="title">FLAMES</h1>
+    <p id="subtitle">A Fun Game</p>
+
+    <input id="person1" type="text" name="name1" placeholder="Person 1" required/>
+    <input id="person2" type="text" name="name2" placeholder="Person 2" required/>
+    <button id="btn" type="button">Check</button>
+    <button id="reset-btn" type="button">Reset</button>
+    <p id="result"></p>
+    <script>
+        let button = document.getElementById("btn");
+        button.addEventListener('click', () => {
+            let person1 = document.getElementById("person1").value;
+            let person2 = document.getElementById("person2").value;
+            fetch('http://localhost:3000/inputs',{
+                method: 'POST',
+                body: JSON.stringify({
+                    person1: person1,
+                    person2: person2
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                let flamesResult = data.result;
+                switch(flamesResult){
+                    case 'f': flamesResult= "You are friends!"; break;
+                    case 'l': flamesResult= "You are lovers!"; break;
+                    case 'a': flamesResult= "You guys have so much affection on each other!"; break;
+                    case 'm': flamesResult= "You are married couples (or) You will marry your mate!"; break;
+                    case 'e': flamesResult= "You are enemies!"; break;
+                    case 's': flamesResult= "You are siblings!"; break;
+                }
+                document.getElementById('result').innerHTML = flamesResult;
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        });
+        let resetButton = document.getElementById('reset-btn');
+        resetButton.addEventListener('click',() => {
+            document.getElementById('person1').value = "";
+            document.getElementById('person2').value = "";
+            document.getElementById('result').innerHTML = "";
+        });
+    </script>
+</body>
+</html>
